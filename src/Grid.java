@@ -1,46 +1,44 @@
 import java.awt.*;
 
 public class Grid {
-    int psz = 1; //pen size = 1px
-    //    int csz; //cell size
+    final int psz = 1; //pen size = 1px
+    final int csz; //cell size
+    final int n; // number of cells in each grid row & column
     Rectangle bounds;
     Cell[][] cls;
 
+    Grid(int n, int x0, int y0, int width, int height) {
+        /**
+         * Creates maximal cell-grid starting in point (x0, y0) bounded by width & height
+         * Caution! Grid might be SMALLER than given bounding box.
+         */
+        this.n = n;
+        csz = (width - psz) / n; // width = n * (psz + csz) + psz;
+        int dx = csz + psz;
+        int dy = dx;
 
-    Grid(int n, Rectangle bounds) {
-        this.bounds = bounds;
-        cls = new Cell[n][n];
+        bounds = new Rectangle(x0, y0, dx * n + psz, dy * n + psz);
+
         int npoints = 4;
-
-        int x0 = bounds.x;
-        double dx = ((double) bounds.width - psz) / n;
-//        int[] xpoints = {psz, (int) (dx - 1), (int) (dx - 1), psz};
-//        System.out.println("Grid dx " + dx);
-
-        int y0 = bounds.y;
-        double dy = ((double) bounds.height - psz) / n;
-//        System.out.println("Grid dy " + dy);
-//        int[] ypoints = {psz, psz, (int) (dy - 1), (int) (dy - 1)};
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
+        cls = new Cell[n][n];
+        for (int i = 0, y = y0; i < n; i++, y += dy) {
+            for (int j = 0, x = x0; j < n; j++, x += dx) {
                 int[] xpoints = {
-                        (int) (x0 + psz + dx * j),
-                        (int) (x0 + dx + dx * j),
-                        (int) (x0 + dx + dx * j),
-                        (int) (x0 + psz + dx * j)
+                        (x + psz),
+                        (x + dx),
+                        (x + dx),
+                        (x + psz)
                 };
-//                if (dx + dx * j >= bounds.width - 1) System.out.println("Alert " + j);
                 int[] ypoints = {
-                        (int) (y0 + psz + dy * i),
-                        (int) (y0 + psz + dy * i),
-                        (int) (y0 + dy + dy * i),
-                        (int) (y0 + dy + dy * i)
+                        (y + psz),
+                        (y + psz),
+                        (y + dy),
+                        (y + dy)
                 };
-                Polygon shape = new Polygon(xpoints, ypoints, npoints);
-                cls[i][j] = new Cell(shape);
+                cls[i][j] = new Cell(new Polygon(xpoints, ypoints, npoints), this);
             }
         }
+        System.out.println("bounds of gird = " + bounds);
     }
 
     private void drawSquareGrid(Graphics g) {
@@ -49,33 +47,21 @@ public class Grid {
          */
         int x0 = bounds.x;
         int y0 = bounds.y;
-        int x1 = bounds.width + x0;
-        int y1 = bounds.height + y0;
-        int n = cls.length;
+        int x1 = x0 + bounds.width - 1;
+        int y1 = y0 + bounds.height - 1;
+        int dx = psz + csz;
+        int dy = dx;
 
-        psz = 1; //pen size = 1px
         g.setColor(Color.BLACK);
 
         // Vertical lines
-        double dx = (x1 - x0 - psz); // (width - psz) / n
-        dx /= n;
-        System.err.println("dx " + dx);
-        for (double x = x0; x < x1; x += dx) {
-            int i = (int) x;
-            System.out.println("i x " + i + " " + x);
-            g.drawLine(i, y0, i, y1 - 1);
+        for (int j = 0, x = x0; j < n + 1; j++, x += dx) {
+            g.drawLine(x, y0, x, y1);
         }
-//        g.drawLine(x1 - psz, y0, x1 - psz, y1 - psz);
-
         // Horizontal lines
-        double dy = (y1 - y0 - psz); // dy = csz + psz
-        dy /= n;
-        System.err.println("dy " + dy);
-        for (double y = y0; y < y1; y += dy) {
-            int j = (int) y;
-            g.drawLine(x0, j, x1 - 1, j);
+        for (int i = 0, y = y0; i < n + 1; i++, y += dy) {
+            g.drawLine(x0, y, x1, y);
         }
-//        g.drawLine(x0, y1 - psz, x1 - psz, y1 - psz);
     }
 
     void draw(Graphics g) {

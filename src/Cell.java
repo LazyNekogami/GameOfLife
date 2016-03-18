@@ -1,19 +1,19 @@
 import java.awt.*;
-import java.util.HashSet;
 
 public class Cell {
     CellState state;
     CellState new_state;
     Polygon shape;
-    HashSet<Cell> adj;
+    Grid grid;
 
     Cell(Polygon shape) {
         this.shape = shape;
         state = CellState.DEAD;
     }
 
-    void addNeighbor(Cell neighbor) {
-        adj.add(neighbor);
+    Cell(Polygon shape, Grid grid) {
+        this(shape);
+        this.grid = grid;
     }
 
     void changeState() {
@@ -21,6 +21,7 @@ public class Cell {
     }
 
     void draw(Graphics g) {
+        Color tmp = g.getColor();
         switch (state) {
             case ALIVE:
                 g.setColor(Color.YELLOW);
@@ -30,10 +31,11 @@ public class Cell {
                 break;
         }
         g.fillPolygon(shape);
+        g.setColor(tmp);
     }
 
     @Override
     public String toString() {
-        return "Cell[state=" + state + ",new_state=" + new_state + ",shape=" + shape + ",adj=" + adj + "]";
+        return "Cell[state=" + state + ",new_state=" + new_state + ",shape=" + shape + "]";
     }
 }

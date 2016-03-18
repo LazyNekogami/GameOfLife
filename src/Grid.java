@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
 public class Grid {
     final int psz = 1; //pen size = 1px
@@ -62,6 +63,32 @@ public class Grid {
         for (int i = 0, y = y0; i < n + 1; i++, y += dy) {
             g.drawLine(x0, y, x1, y);
         }
+    }
+
+    public void clicked(MouseEvent e) {
+        int ex = e.getX() - bounds.x;
+        if (ex < 0 || ex >= bounds.width) return;
+
+        int ey = e.getY() - bounds.y;
+        if (ey < 0 || ey >= bounds.height) return;
+        int dx = csz + psz;
+        int dy = dx;
+
+        int j = ex / dx;
+        int i = ey / dy;
+        cls[i][j].reverseState();
+    }
+
+    public Rectangle clicked(MouseEvent e, Graphics g) {
+        int ex = e.getX() - bounds.x;
+        int ey = e.getY() - bounds.y;
+        int dx = csz + psz;
+        int dy = dx;
+
+        int j = ex / dx;
+        int i = ey / dy;
+        cls[i][j].reverseState();
+        return cls[i][j].draw(g);
     }
 
     void draw(Graphics g) {

@@ -20,7 +20,27 @@ public class Cell {
         state = new_state;
     }
 
-    void draw(Graphics g) {
+    void reverseState() {
+        switch (state) {
+            case ALIVE:
+                new_state = CellState.DEAD;
+                break;
+            case DEAD:
+                new_state = CellState.ALIVE;
+                break;
+            default:
+                System.err.println("Not specified state of the cell");
+        }
+        changeState();
+    }
+
+    void reverseState(Graphics g) {
+        System.out.println("state = " + state + "shape = " + shape);
+        reverseState();
+        draw(g);
+    }
+
+    Rectangle draw(Graphics g) {
         Color tmp = g.getColor();
         switch (state) {
             case ALIVE:
@@ -32,6 +52,7 @@ public class Cell {
         }
         g.fillPolygon(shape);
         g.setColor(tmp);
+        return shape.getBounds();
     }
 
     @Override

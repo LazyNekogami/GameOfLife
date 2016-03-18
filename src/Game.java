@@ -1,9 +1,6 @@
 
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.Random;
 
 import javax.swing.*;
@@ -19,6 +16,10 @@ public class Game extends JFrame {
 
     public Game() {
         init();
+    }
+
+    public static void main(String[] args) {
+        new Game();
     }
 
     private void init() {
@@ -52,11 +53,6 @@ public class Game extends JFrame {
 
     private class MyKeyAdaptor extends KeyAdapter {
         MovingPoint mp;
-
-        MyKeyAdaptor() {
-        }
-
-        ;
 
         MyKeyAdaptor(MovingPoint mp) {
             this.mp = mp;
@@ -97,8 +93,8 @@ public class Game extends JFrame {
 //            canv.drawRndColoredLine(e);
         }
 
-    }
 
+    }
 
     private class MyCanvas extends Canvas {
         Graphics g;
@@ -107,7 +103,8 @@ public class Game extends JFrame {
 
         MyCanvas() {
             super();
-            grid = new Grid(13, new Rectangle(10, 10, 290, 290));
+            grid = new Grid(13, 10, 10, 290, 290);
+            addMouseListener(new MyCanvasMouseAdapter());
         }
 
         void drawRndColoredLine(MouseEvent e) {
@@ -124,16 +121,16 @@ public class Game extends JFrame {
             super.paint(g);
             grid.draw(g);
             mp.draw(g);
-//            drawGrid(g);
         }
 
-//        void drawGrid(Graphics g) {
-//            new Drawer(g).drawSquareGrid(0, 0, 500, 500, 50);
-//        }
+        class MyCanvasMouseAdapter extends MouseAdapter {
+            @Override
+            public void mousePressed(MouseEvent e) {
+//                System.out.println(e);
+                g = getGraphics();
+                Rectangle updatedArea = grid.clicked(e, g);
+                repaint(updatedArea.x, updatedArea.y, updatedArea.width, updatedArea.height);
+            }
+        }
     }
-
-    public static void main(String[] args) {
-        new Game();
-    }
-
 }

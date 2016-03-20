@@ -1,12 +1,17 @@
 import java.awt.*;
+import java.util.HashSet;
 
 public class Cell {
+    final Color _DESERT_BROWN = new Color(237, 201, 175);
+    final Color _GREEN = new Color(34, 139, 34);
     CellState state;
     CellState new_state;
     Polygon shape;
     Grid grid;
+    HashSet<Cell> adj; //adjacent cells to current
 
     Cell(Polygon shape) {
+        adj = new HashSet<>(8);
         this.shape = shape;
         state = CellState.DEAD;
     }
@@ -16,8 +21,36 @@ public class Cell {
         this.grid = grid;
     }
 
+    public CellState getState() {
+        return state;
+    }
+
+    public HashSet<Cell> getAdj() {
+        return adj;
+    }
+
+    public void addAdj(Cell cell) {
+        adj.add(cell);
+    }
+
     void changeState() {
         state = new_state;
+    }
+
+    void computeNewState() {
+        int counter = 0;
+        for (Cell cell : adj) {
+            if (cell.getState().equals(CellState.ALIVE)) counter++;
+        }
+
+        //Killing alive or Reviving dead one
+        if (this.state.equals(CellState.ALIVE)) {
+            if (counter < 2 || counter > 3) new_state = CellState.DEAD;
+            else new_state = state;
+        } else if (this.state.equals(CellState.DEAD)) {
+            if (counter == 3) new_state = CellState.ALIVE;
+            else new_state = state;
+        }
     }
 
     void reverseState() {
@@ -34,20 +67,30 @@ public class Cell {
         changeState();
     }
 
-    void reverseState(Graphics g) {
-        System.out.println("state = " + state + "shape = " + shape);
+    Rectangle reverseState(Graphics g) {
         reverseState();
-        draw(g);
+        return draw(g);
+    }
+
+    void reverseStateOfAllAdj(Graphics g) {
+        /**
+         * Debug method
+         */
+//        Rectangle res = reverseState(g);
+        for (Cell c : adj) {
+//            res =
+            c.reverseState(g);
+        }
     }
 
     Rectangle draw(Graphics g) {
         Color tmp = g.getColor();
         switch (state) {
             case ALIVE:
-                g.setColor(Color.YELLOW);
+                g.setColor(_GREEN);
                 break;
             case DEAD:
-                g.setColor(Color.RED);
+                g.setColor(_DESERT_BROWN);
                 break;
         }
         g.fillPolygon(shape);

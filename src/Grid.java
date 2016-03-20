@@ -1,11 +1,12 @@
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.util.HashSet;
 
 public class Grid {
     final int psz = 1; //pen size = 1px
     final int csz; //cell size
     final int n; // number of cells in each grid row & column
-    Rectangle bounds;
+    final Rectangle bounds;
     Cell[][] cls;
 
     Grid(int n, int x0, int y0, int width, int height) {
@@ -22,6 +23,8 @@ public class Grid {
 
         int npoints = 4;
         cls = new Cell[n][n];
+
+        //Initializing each cell in table cls[0..n][0..n]
         for (int i = 0, y = y0; i < n; i++, y += dy) {
             for (int j = 0, x = x0; j < n; j++, x += dx) {
                 int[] xpoints = {
@@ -39,7 +42,28 @@ public class Grid {
                 cls[i][j] = new Cell(new Polygon(xpoints, ypoints, npoints), this);
             }
         }
-        System.out.println("bounds of gird = " + bounds);
+
+        //Binding all 9-s of cells together
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                bindAdjs(i, j);
+            }
+        }
+    }
+
+    private void bindAdjs(int i, int j) {
+        /**
+         * Binds all adjacent cells in a Moore neighborhood to cls[i][j]
+         */
+        for (int k = -1; k < 2; k++) {
+            for (int l = -1; l < 2; l++) {
+                int adj_i = (i + k + n) % n;
+                int adj_j = (j + l + n) % n;
+                if (adj_i == i && adj_j == j) continue;
+                Cell adj = cls[adj_i][adj_j];
+                cls[i][j].addAdj(adj);
+            }
+        }
     }
 
     private void drawSquareGrid(Graphics g) {
@@ -81,14 +105,54 @@ public class Grid {
 
     public Rectangle clicked(MouseEvent e, Graphics g) {
         int ex = e.getX() - bounds.x;
+        if (ex < 0 || ex >= bounds.width) return new Rectangle(0, 0);
+
         int ey = e.getY() - bounds.y;
+        if (ey < 0 || ey >= bounds.height) return new Rectangle(0, 0);
         int dx = csz + psz;
         int dy = dx;
 
         int j = ex / dx;
         int i = ey / dy;
-        cls[i][j].reverseState();
-        return cls[i][j].draw(g);
+        return cls[i][j].reverseState(g);
+    }
+
+    public void clickedDebug(MouseEvent e, Graphics g) {
+        /**
+         * Anouther debug method
+         */
+        int ex = e.getX() - bounds.x;
+        if (ex < 0 || ex >= bounds.width) return;
+
+        int ey = e.getY() - bounds.y;
+        if (ey < 0 || ey >= bounds.height) return;
+        int dx = csz + psz;
+        int dy = dx;
+
+        int j = ex / dx;
+        int i = ey / dy;
+        cls[i][j].reverseStateOfAllAdj(g);
+    }
+
+    public void step(Graphics g) {
+        HashSet<Cell> list = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                Cell cell = cls[i][j];
+                if (cell.getState().equals(CellState.ALIVE)) {
+                    list.addAll(cell.getAdj());
+                    list.add(cell);
+                }
+            }
+        }
+
+        System.out.println(list);
+        for (Cell cell : list) cell.computeNewState();
+        for (Cell cell : list) {
+            cell.changeState();
+            cell.draw(g);
+        }
+//        return list;
     }
 
     void draw(Graphics g) {

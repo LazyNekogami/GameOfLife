@@ -1,10 +1,8 @@
-
+import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Random;
-
-import javax.swing.*;
-import javax.swing.event.MouseInputAdapter;
 
 public class Game extends JFrame {
     private static final long serialVersionUID = -5621534979740641657L;
@@ -24,7 +22,7 @@ public class Game extends JFrame {
 
     private void init() {
         setAndShowGUI();
-        MyMouseAdapter listener = new MyMouseAdapter(canv);
+        RainbowDrawer listener = new RainbowDrawer(canv);
         MyKeyAdaptor keyListener = new MyKeyAdaptor(mp);
         canv.addMouseListener(listener);
         canv.addMouseMotionListener(listener);
@@ -78,22 +76,19 @@ public class Game extends JFrame {
             }
             System.out.println(e.getKeyCode());
             canv.repaint();
-//            canv.repaint(50,50,300,300);
         }
     }
 
-    public class MyMouseAdapter extends MouseInputAdapter {
+    public class RainbowDrawer extends MouseInputAdapter {
         MyCanvas canv;
 
-        public MyMouseAdapter(MyCanvas canv) {
+        public RainbowDrawer(MyCanvas canv) {
             this.canv = canv;
         }
 
         public void mouseDragged(MouseEvent e) {
 //            canv.drawRndColoredLine(e);
         }
-
-
     }
 
     private class MyCanvas extends Canvas {
@@ -105,6 +100,23 @@ public class Game extends JFrame {
             super();
             grid = new Grid(13, 10, 10, 290, 290);
             addMouseListener(new MyCanvasMouseAdapter());
+            addKeyListener(new KeyListener() {
+                @Override
+                public void keyTyped(KeyEvent e) {
+
+                }
+
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    // 0x4C == "L" key code
+                    if (e.getKeyCode() == 0x4C) grid.step(getGraphics());
+                }
+
+                @Override
+                public void keyReleased(KeyEvent e) {
+
+                }
+            });
         }
 
         void drawRndColoredLine(MouseEvent e) {
@@ -120,14 +132,15 @@ public class Game extends JFrame {
         public void paint(Graphics g) {
             super.paint(g);
             grid.draw(g);
-            mp.draw(g);
+//            mp.draw(g);
         }
 
         class MyCanvasMouseAdapter extends MouseAdapter {
             @Override
             public void mousePressed(MouseEvent e) {
-//                System.out.println(e);
                 g = getGraphics();
+//                grid.clickedDebug(e, g);
+//                repaint();
                 Rectangle updatedArea = grid.clicked(e, g);
                 repaint(updatedArea.x, updatedArea.y, updatedArea.width, updatedArea.height);
             }

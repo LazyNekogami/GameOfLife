@@ -78,7 +78,6 @@ public class Cell {
          */
 //        Rectangle res = reverseState(g);
         for (Cell c : adj) {
-//            res =
             c.reverseState(g);
         }
     }

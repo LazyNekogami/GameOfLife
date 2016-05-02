@@ -50,6 +50,9 @@ public class Game extends JFrame {
     }
 
     private class MyKeyAdaptor extends KeyAdapter {
+        /*
+        Debugging class
+         */
         MovingPoint mp;
 
         MyKeyAdaptor(MovingPoint mp) {

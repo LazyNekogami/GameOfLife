@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.HashSet;
 
+@SuppressWarnings("redundant")
 public class Grid {
     final int psz = 1; //pen size = 1px
     final int csz; //cell size
@@ -119,7 +120,7 @@ public class Grid {
 
     public void clickedDebug(MouseEvent e, Graphics g) {
         /**
-         * Anouther debug method
+         * Another debug method
          */
         int ex = e.getX() - bounds.x;
         if (ex < 0 || ex >= bounds.width) return;

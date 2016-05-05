@@ -13,6 +13,7 @@ public class Canvas extends java.awt.Canvas implements MouseListener {
     Canvas() {
 //        super();
         setBounds(x, y, width, height);
+        setSize(width, height);
 //        setBackground(Color.PINK);
         addMouseListener(this);
     }

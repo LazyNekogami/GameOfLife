@@ -1,3 +1,5 @@
+package Mechanics;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.HashSet;
@@ -10,11 +12,11 @@ public class Grid {
     final Rectangle bounds;
     Cell[][] cls;
 
+    /**
+     * Creates maximal cell-grid starting in point (x0, y0) bounded by width & height
+     * Caution! Mechanics.Grid might be SMALLER than given bounding box.
+     */
     Grid(int n, int x0, int y0, int width, int height) {
-        /**
-         * Creates maximal cell-grid starting in point (x0, y0) bounded by width & height
-         * Caution! Grid might be SMALLER than given bounding box.
-         */
         this.n = n;
         csz = (width - psz) / n; // width = n * (psz + csz) + psz;
         int dx = csz + psz;
@@ -52,10 +54,10 @@ public class Grid {
         }
     }
 
+    /**
+     * Binds all adjacent cells in a Moore neighborhood to cls[i][j]
+     */
     private void bindAdjs(int i, int j) {
-        /**
-         * Binds all adjacent cells in a Moore neighborhood to cls[i][j]
-         */
         for (int k = -1; k < 2; k++) {
             for (int l = -1; l < 2; l++) {
                 int adj_i = (i + k + n) % n;
@@ -67,10 +69,10 @@ public class Grid {
         }
     }
 
+    /**
+     * Utility method that draws empty rectangular grid
+     */
     private void drawSquareGrid(Graphics g) {
-        /**
-         * Utility method that draws empty rectangular grid
-         */
         int x0 = bounds.x;
         int y0 = bounds.y;
         int x1 = x0 + bounds.width - 1;
@@ -118,10 +120,11 @@ public class Grid {
         return cls[i][j].reverseState(g);
     }
 
+    /**
+     * Another debug method
+     */
     public void clickedDebug(MouseEvent e, Graphics g) {
-        /**
-         * Another debug method
-         */
+
         int ex = e.getX() - bounds.x;
         if (ex < 0 || ex >= bounds.width) return;
 
@@ -156,11 +159,10 @@ public class Grid {
 //        return list;
     }
 
-    void draw(Graphics g) {
-        /**
-         * Draws field: grid & cells in it
-         */
-
+    /**
+     * Draws field: grid & cells in it
+     */
+    void redraw(Graphics g) {
         for (int i = 0; i < cls.length; i++) {
             for (int j = 0; j < cls[i].length; j++) {
                 cls[i][j].draw(g);

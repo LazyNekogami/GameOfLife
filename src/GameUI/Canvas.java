@@ -1,20 +1,23 @@
 package GameUI;
 
+import Mechanics.Grid;
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class Canvas extends java.awt.Canvas implements MouseListener {
-    //bounds
-    private int x = 0;
-    private int y = 0;
-    private int width = 540;
-    private int height = 540;
+    // Bounds
+    protected int x = 0;
+    protected int y = 0;
+    protected int width = 540;
+    protected int height = 540;
+
+    protected Grid grid;
 
     Canvas() {
-//        super();
+        super();
         setBounds(x, y, width, height);
         setSize(width, height);
-//        setBackground(Color.PINK);
         addMouseListener(this);
     }
 
@@ -35,11 +38,11 @@ public class Canvas extends java.awt.Canvas implements MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
+        //do nothing
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-
+        //do nothing
     }
 }

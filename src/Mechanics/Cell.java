@@ -1,3 +1,5 @@
+package Mechanics;
+
 import java.awt.*;
 import java.util.HashSet;
 
@@ -72,10 +74,10 @@ public class Cell {
         return draw(g);
     }
 
+    /**
+     * Debug method
+     */
     void reverseStateOfAllAdj(Graphics g) {
-        /**
-         * Debug method
-         */
 //        Rectangle res = reverseState(g);
         for (Cell c : adj) {
             c.reverseState(g);
@@ -99,6 +101,6 @@ public class Cell {
 
     @Override
     public String toString() {
-        return "Cell[state=" + state + ",new_state=" + new_state + ",shape=" + shape + "]";
+        return "Mechanics.Cell[state=" + state + ",new_state=" + new_state + ",shape=" + shape + "]";
     }
 }

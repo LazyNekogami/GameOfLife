@@ -1,3 +1,5 @@
+package Mechanics;
+
 import java.awt.*;
 
 public class MovingPoint {

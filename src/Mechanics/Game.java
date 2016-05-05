@@ -1,3 +1,5 @@
+package Mechanics;
+
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
@@ -122,10 +124,12 @@ public class Game extends JFrame {
             });
         }
 
+
+        /**
+         * Funny useless method
+         */
         void drawRndColoredLine(MouseEvent e) {
-            /**
-             * Funny useless method
-             */
+
             g = getGraphics();
             g.setColor(new Color(rnd.nextInt(0xffffff + 1)));
             g.drawLine(rnd.nextInt(getWidth()), rnd.nextInt(getHeight()), e.getX(), e.getY());
@@ -134,8 +138,8 @@ public class Game extends JFrame {
         @Override
         public void paint(Graphics g) {
             super.paint(g);
-            grid.draw(g);
-//            mp.draw(g);
+            grid.redraw(g);
+//            mp.redraw(g);
         }
 
         class MyCanvasMouseAdapter extends MouseAdapter {

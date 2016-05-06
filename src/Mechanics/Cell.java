@@ -55,7 +55,7 @@ public class Cell {
         }
     }
 
-    void reverseState() {
+    Rectangle reverseState() {
         switch (state) {
             case ALIVE:
                 new_state = CellState.DEAD;
@@ -67,6 +67,7 @@ public class Cell {
                 System.err.println("Not specified state of the cell");
         }
         changeState();
+        return shape.getBounds();
     }
 
     Rectangle reverseState(Graphics g) {

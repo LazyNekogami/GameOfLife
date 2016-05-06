@@ -2,10 +2,10 @@ package Mechanics;
 
 import java.awt.*;
 
+/**
+ * Deprecated
+ */
 public class Drawer {
-    /**
-     * Deprecated
-     */
     Graphics g;
 
     public Drawer(Graphics g) {

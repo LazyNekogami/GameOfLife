@@ -16,12 +16,13 @@ public class Grid {
      * Creates maximal cell-grid starting in point (x0, y0) bounded by width & height
      * Caution! Mechanics.Grid might be SMALLER than given bounding box.
      */
-    Grid(int n, int x0, int y0, int width, int height) {
+    public Grid(int n, int x0, int y0, int width, int height) {
         this.n = n;
-        csz = (width - psz) / n; // width = n * (psz + csz) + psz;
+        csz = (width - psz) / n - psz; // width = n * (psz + csz) + psz;
         int dx = csz + psz;
         int dy = dx;
 
+        System.err.println(width + " " + dx + " " + n + " " + dx * n);
         bounds = new Rectangle(x0, y0, dx * n + psz, dy * n + psz);
 
         int npoints = 4;
@@ -52,6 +53,10 @@ public class Grid {
                 bindAdjs(i, j);
             }
         }
+    }
+
+    public Grid(int n, int width) {
+        this(n, 0, 0, width, width);
     }
 
     /**
@@ -92,18 +97,18 @@ public class Grid {
         }
     }
 
-    public void clicked(MouseEvent e) {
+    public Rectangle clicked(MouseEvent e) {
         int ex = e.getX() - bounds.x;
-        if (ex < 0 || ex >= bounds.width) return;
+        if (ex < 0 || ex >= bounds.width) return new Rectangle(0, 0);
 
         int ey = e.getY() - bounds.y;
-        if (ey < 0 || ey >= bounds.height) return;
+        if (ey < 0 || ey >= bounds.height) return new Rectangle(0, 0);
         int dx = csz + psz;
         int dy = dx;
 
         int j = ex / dx;
         int i = ey / dy;
-        cls[i][j].reverseState();
+        return cls[i][j].reverseState();
     }
 
     public Rectangle clicked(MouseEvent e, Graphics g) {
@@ -162,12 +167,16 @@ public class Grid {
     /**
      * Draws field: grid & cells in it
      */
-    void redraw(Graphics g) {
+    public void redraw(Graphics g) {
         for (int i = 0; i < cls.length; i++) {
             for (int j = 0; j < cls[i].length; j++) {
                 cls[i][j].draw(g);
             }
         }
         drawSquareGrid(g);
+    }
+
+    public Rectangle getBounds() {
+        return bounds;
     }
 }

@@ -6,6 +6,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Random;
 
+/**
+ * Deprecated class
+ */
 public class Game extends JFrame {
     private static final long serialVersionUID = -5621534979740641657L;
 
@@ -103,7 +106,7 @@ public class Game extends JFrame {
 
         MyCanvas() {
             super();
-            grid = new Grid(13, 10, 10, 290, 290);
+            grid = new Grid(13, 0, 0, 300, 300);
             addMouseListener(new MyCanvasMouseAdapter());
             addKeyListener(new KeyListener() {
                 @Override

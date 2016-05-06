@@ -34,15 +34,21 @@ public class MainFrame extends JFrame implements ActionListener {
 //        setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
+        setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
 
         // Canvas
-        canv = new Canvas();
-        add(canv, BorderLayout.LINE_START);
+        int canvSize = getContentPane().getHeight();
+        canv = new Canvas(canvSize);
+        add(canv);
         canv.setBackground(Color.GREEN);
+        canv.setSize(canvSize, canvSize);
+//        Dimension maxSize = new Dimension(canv.width, canv.height);
+//        Dimension minSize = new Dimension(canv.width-200, canv.height-200);
+//        canv.setMaximumSize(maxSize);
+//        canv.setMinimumSize(minSize);
 
         // Panels
-        add(infoAndControlPanel, BorderLayout.CENTER);
+//        add(infoAndControlPanel);
         controlPanel.setBorder(BorderFactory.createTitledBorder("Controls"));
         infoPanel.setBorder(BorderFactory.createTitledBorder("Info"));
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));

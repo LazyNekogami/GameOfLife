@@ -1,6 +1,6 @@
 package GameUI;
 
-import Mechanics.Grid;
+import Mechanics.Field;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -8,25 +8,22 @@ import java.awt.event.MouseListener;
 
 public class Canvas extends java.awt.Canvas implements MouseListener {
     // Bounds
-    protected int width = 300;
+    protected int width = 495;
     protected int n = 13;
 
-    protected Grid grid;
+    protected Field field;
 
     Canvas() {
         super();
-//        setBounds(x, y, width, height);
-//        setSize(width, height);
         addMouseListener(this);
-//        grid = new Grid(n, x, y, width, height);
-        grid = new Grid(n, width);
+        field = new Field(n, width);
     }
 
     Canvas(int height) {
         super();
         this.width = height;
         addMouseListener(this);
-        grid = new Grid(n, width);
+        field = new Field(n, width);
     }
 
     public void repaint(Rectangle area) {
@@ -39,14 +36,15 @@ public class Canvas extends java.awt.Canvas implements MouseListener {
 
     @Override
     public void paint(Graphics g) {
+        setSize(field.getBounds().getSize());
         System.out.println(getWidth());
-        System.out.println(grid.getBounds());
-        grid.redraw(g);
+        System.out.println(field.getBounds());
+        field.redraw(g);
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        Rectangle area = grid.clicked(e);
+        Rectangle area = field.clicked(e);
         repaint(area);
     }
 

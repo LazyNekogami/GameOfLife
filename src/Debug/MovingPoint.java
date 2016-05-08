@@ -1,11 +1,11 @@
-package Mechanics;
+package Debug;
 
 import java.awt.*;
 
 public class MovingPoint {
     Point p;
 
-    MovingPoint(Point p) {
+    public MovingPoint(Point p) {
         this.p = p;
     }
 
@@ -19,7 +19,7 @@ public class MovingPoint {
         temp = null;
     }
 
-    void move(int x, int y) {
+    public void move(int x, int y) {
         p.translate(x, y);
         System.out.println(p);
     }

@@ -1,4 +1,4 @@
-package Mechanics;
+package Deprecated;
 
 import java.awt.*;
 

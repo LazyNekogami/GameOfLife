@@ -1,20 +1,21 @@
-package Mechanics;
+package Deprecated;
+
+import Mechanics.CellState;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.HashSet;
 
-@SuppressWarnings("redundant")
 public class Grid {
     final int psz = 1; //pen size = 1px
     final int csz; //cell size
-    final int n; // number of cells in each grid row & column
+    final int n; // number of cells in each field row & column
     final Rectangle bounds;
     Cell[][] cls;
 
     /**
-     * Creates maximal cell-grid starting in point (x0, y0) bounded by width & height
-     * Caution! Mechanics.Grid might be SMALLER than given bounding box.
+     * Creates maximal cell-field starting in point (x0, y0) bounded by width & height
+     * Caution! Deprecated.Field might be SMALLER than given bounding box.
      */
     public Grid(int n, int x0, int y0, int width, int height) {
         this.n = n;
@@ -75,7 +76,7 @@ public class Grid {
     }
 
     /**
-     * Utility method that draws empty rectangular grid
+     * Utility method that draws empty rectangular field
      */
     private void drawSquareGrid(Graphics g) {
         int x0 = bounds.x;
@@ -165,7 +166,7 @@ public class Grid {
     }
 
     /**
-     * Draws field: grid & cells in it
+     * Draws field: field & cells in it
      */
     public void redraw(Graphics g) {
         for (int i = 0; i < cls.length; i++) {
@@ -173,7 +174,7 @@ public class Grid {
                 cls[i][j].draw(g);
             }
         }
-        drawSquareGrid(g);
+//        drawSquareGrid(g);
     }
 
     public Rectangle getBounds() {

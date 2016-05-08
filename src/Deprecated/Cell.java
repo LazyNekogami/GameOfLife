@@ -1,4 +1,6 @@
-package Mechanics;
+package Deprecated;
+
+import Mechanics.CellState;
 
 import java.awt.*;
 import java.util.HashSet;
@@ -12,13 +14,13 @@ public class Cell {
     Grid grid;
     HashSet<Cell> adj; //adjacent cells to current
 
-    Cell(Polygon shape) {
+    public Cell(Polygon shape) {
         adj = new HashSet<>(8);
         this.shape = shape;
         state = CellState.DEAD;
     }
 
-    Cell(Polygon shape, Grid grid) {
+    public Cell(Polygon shape, Grid grid) {
         this(shape);
         this.grid = grid;
     }
@@ -35,11 +37,11 @@ public class Cell {
         adj.add(cell);
     }
 
-    void changeState() {
+    public void changeState() {
         state = new_state;
     }
 
-    void computeNewState() {
+    public void computeNewState() {
         int counter = 0;
         for (Cell cell : adj) {
             if (cell.getState().equals(CellState.ALIVE)) counter++;
@@ -55,7 +57,7 @@ public class Cell {
         }
     }
 
-    Rectangle reverseState() {
+    public Rectangle reverseState() {
         switch (state) {
             case ALIVE:
                 new_state = CellState.DEAD;
@@ -70,7 +72,7 @@ public class Cell {
         return shape.getBounds();
     }
 
-    Rectangle reverseState(Graphics g) {
+    public Rectangle reverseState(Graphics g) {
         reverseState();
         return draw(g);
     }
@@ -78,14 +80,13 @@ public class Cell {
     /**
      * Debug method
      */
-    void reverseStateOfAllAdj(Graphics g) {
-//        Rectangle res = reverseState(g);
+    public void reverseStateOfAllAdj(Graphics g) {
         for (Cell c : adj) {
             c.reverseState(g);
         }
     }
 
-    Rectangle draw(Graphics g) {
+    public Rectangle draw(Graphics g) {
         Color tmp = g.getColor();
         switch (state) {
             case ALIVE:
@@ -102,6 +103,6 @@ public class Cell {
 
     @Override
     public String toString() {
-        return "Mechanics.Cell[state=" + state + ",new_state=" + new_state + ",shape=" + shape + "]";
+        return "Deprecated.Cell[state=" + state + ",new_state=" + new_state + ",shape=" + shape + "]";
     }
 }

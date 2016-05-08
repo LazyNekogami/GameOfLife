@@ -1,4 +1,6 @@
-package Mechanics;
+package Deprecated;
+
+import Debug.MovingPoint;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
@@ -149,7 +151,7 @@ public class Game extends JFrame {
             @Override
             public void mousePressed(MouseEvent e) {
                 g = getGraphics();
-//                grid.clickedDebug(e, g);
+//                field.clickedDebug(e, g);
 //                repaint();
                 Rectangle updatedArea = grid.clicked(e, g);
                 repaint(updatedArea.x, updatedArea.y, updatedArea.width, updatedArea.height);

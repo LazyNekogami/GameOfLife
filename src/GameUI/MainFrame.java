@@ -38,7 +38,9 @@ public class MainFrame extends JFrame implements ActionListener {
 
         // Canvas
         int canvSize = getContentPane().getHeight();
-        canv = new Canvas(canvSize);
+//        canv = new Canvas(canvSize);
+        canv = new Canvas();
+        System.out.println("canvAlignmentY=" + canv.getAlignmentY());
         add(canv);
         canv.setBackground(Color.GREEN);
         canv.setSize(canvSize, canvSize);

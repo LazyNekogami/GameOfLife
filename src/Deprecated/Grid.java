@@ -14,12 +14,12 @@ public class Grid {
     Cell[][] cls;
 
     /**
-     * Creates maximal cell-field starting in point (x0, y0) bounded by width & height
+     * Creates maximal cell-field starting in point (x0, y0) bounded by DEFAULT_WIDTH & DEFAULT_HEIGHT
      * Caution! Deprecated.Field might be SMALLER than given bounding box.
      */
     public Grid(int n, int x0, int y0, int width, int height) {
         this.n = n;
-        csz = (width - psz) / n - psz; // width = n * (psz + csz) + psz;
+        csz = (width - psz) / n - psz; // DEFAULT_WIDTH = n * (psz + csz) + psz;
         int dx = csz + psz;
         int dy = dx;
 

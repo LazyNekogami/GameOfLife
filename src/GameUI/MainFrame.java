@@ -4,25 +4,34 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.util.Random;
 
 @SuppressWarnings("serial")
-public class MainFrame extends JFrame implements ActionListener {
+public class MainFrame extends JFrame implements ActionListener, AdjustmentListener {
     // Bounds
-    protected final int width = 720;
-    protected final int height = 540;
+    protected final int DEFAULT_WIDTH = 720;
+    protected final int DEFAULT_HEIGHT = 540;
     protected int x;
     protected int y;
 
     // Components
     protected Canvas canv;
 
-    protected JButton startButton = new JButton("Start!");
-    protected JButton stepButton = new JButton("Step");
-
     protected JPanel infoAndControlPanel = new JPanel(new BorderLayout());
     protected JPanel controlPanel = new JPanel();
     protected JPanel infoPanel = new JPanel();
+
+    protected JButton startButton = new JButton("Start!");
+    protected JButton stopButton = new JButton("Stop!");
+    protected JButton stepButton = new JButton("Step");
+
+    protected JLabel numberScrollLabel = new JLabel("Number of cells in row:");
+    protected JScrollBar numberScroll = new JScrollBar(Adjustable.HORIZONTAL, 13, 1, 1, 20);
+    protected JLabel delayScrollLabel = new JLabel("Delay:");
+    protected JScrollBar delayScroll = new JScrollBar(Adjustable.HORIZONTAL, 500, 50, 150, 2000);
+
 
     protected JLabel aliveLabel = new JLabel("Currently alive: NaN");
     protected JLabel generationLabel = new JLabel("Current generation: NaN");
@@ -30,47 +39,52 @@ public class MainFrame extends JFrame implements ActionListener {
     MainFrame() {
         // Main Frame
         calculateScreenCenter();
-        setBounds(x, y, width, height);
-//        setResizable(false);
+        setBounds(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
+        setVisible(true);
 
         // Canvas
-        int canvSize = getContentPane().getHeight();
-//        canv = new Canvas(canvSize);
         canv = new Canvas();
-        System.out.println("canvAlignmentY=" + canv.getAlignmentY());
         add(canv);
         canv.setBackground(Color.GREEN);
-        canv.setSize(canvSize, canvSize);
-//        Dimension maxSize = new Dimension(canv.width, canv.height);
-//        Dimension minSize = new Dimension(canv.width-200, canv.height-200);
-//        canv.setMaximumSize(maxSize);
-//        canv.setMinimumSize(minSize);
+        setVisible(true);
+        //TODO: somehow fix bug causing not appearing infoAndControlPanel until window iconified and deiconified :/
 
         // Panels
-//        add(infoAndControlPanel);
+        add(infoAndControlPanel);
         controlPanel.setBorder(BorderFactory.createTitledBorder("Controls"));
         infoPanel.setBorder(BorderFactory.createTitledBorder("Info"));
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoAndControlPanel.add(controlPanel, BorderLayout.CENTER);
         infoAndControlPanel.add(infoPanel, BorderLayout.PAGE_END);
+        setVisible(true);
 
         // Button
         startButton.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+        stopButton.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
         stepButton.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
         controlPanel.add(startButton);
+        controlPanel.add(stopButton);
         controlPanel.add(stepButton);
         startButton.addActionListener(this);
+        stopButton.addActionListener(this);
         stepButton.addActionListener(this);
+        stopButton.setVisible(false);
+        setVisible(true);
+
+        // ScrollBar
+        controlPanel.add(numberScrollLabel);
+        controlPanel.add(numberScroll);
+        controlPanel.add(delayScrollLabel);
+        controlPanel.add(delayScroll);
 
         // Labels
         infoPanel.add(aliveLabel);
         infoPanel.add(generationLabel);
-
-        // And finishing touch
         setVisible(true);
     }
 
@@ -80,20 +94,41 @@ public class MainFrame extends JFrame implements ActionListener {
 
     private void calculateScreenCenter() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        x = (int) (screenSize.getWidth() - width) / 2;
-        y = (int) (screenSize.getHeight() - height) / 2;
+        x = (int) (screenSize.getWidth() - DEFAULT_WIDTH) / 2;
+        y = (int) (screenSize.getHeight() - DEFAULT_HEIGHT) / 2;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
-        Random rnd = new Random();
+        Random rnd = new Random(); // let it be
         if (source.equals(startButton)) {
-            startButton.setBackground(Color.getHSBColor(rnd.nextFloat(), 1f, 1.0f));
-            System.out.println(canv.getHeight());
+            System.out.println("Start button pressed");
+            startButton.setVisible(false);
+            stopButton.setVisible(true);
+            stepButton.setEnabled(false);
+            numberScroll.setEnabled(false);
+            delayScroll.setEnabled(false);
         }
         if (source.equals(stepButton)) {
-            stepButton.setBackground(Color.getHSBColor(rnd.nextFloat(), 1f, 1.0f));
+            System.out.println("Step button pressed");
+            setVisible(true);
+        }
+        if (source.equals(stopButton)) {
+            System.out.println("Stop button pressed");
+            startButton.setVisible(true);
+            stopButton.setVisible(false);
+            stepButton.setEnabled(true);
+            numberScroll.setEnabled(true);
+            delayScroll.setEnabled(true);
+        }
+    }
+
+    @Override
+    public void adjustmentValueChanged(AdjustmentEvent e) {
+        Object source = e.getSource();
+        if (source.equals(numberScroll)) {
+
         }
     }
 }

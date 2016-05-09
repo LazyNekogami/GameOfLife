@@ -1,5 +1,6 @@
 package Mechanics;
 
+import java.awt.*;
 import java.util.HashSet;
 
 public class Field implements Runnable {
@@ -20,6 +21,11 @@ public class Field implements Runnable {
                 cells[i][j] = new NewCell();
             }
         }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                bindAdjs(i, j);
+            }
+        }
     }
 
     public Field(int n) {
@@ -28,6 +34,23 @@ public class Field implements Runnable {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 cells[i][j] = new NewCell();
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                bindAdjs(i, j);
+            }
+        }
+    }
+
+    private void bindAdjs(int i, int j) {
+        for (int v = -1; v < 2; v++) {
+            for (int h = -1; h < 2; h++) {
+                int adj_i = (i + v + n) % n;
+                int adj_j = (j + h + n) % n;
+                if (adj_i == i && adj_j == j) continue;
+                NewCell adj = cells[adj_i][adj_j];
+                cells[i][j].addAdj(adj);
             }
         }
     }
@@ -45,14 +68,17 @@ public class Field implements Runnable {
         }
     }
 
-    public void step() {
+    public HashSet<Polygon> step() {
         computeCheckList();
+        HashSet<Polygon> res = new HashSet<>(checkList.size());
         for (NewCell cell : checkList) {
             cell.computeNewState();
+            res.add(cell.getShape());
         }
         for (NewCell cell : checkList) {
             cell.changeState();
         }
+        return res;
     }
 
     private void unpreparedStep() {
@@ -96,5 +122,9 @@ public class Field implements Runnable {
             return;
         }
         this.delay = delay;
+    }
+
+    public void setShape(int i, int j, Polygon shape) {
+        cells[i][j].setShape(shape);
     }
 }

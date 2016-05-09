@@ -51,6 +51,10 @@ public class NewCell {
         changeState();
     }
 
+    public Polygon getShape() {
+        return shape;
+    }
+
     public void setShape(Polygon shape) {
         this.shape = shape;
     }

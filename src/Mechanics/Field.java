@@ -1,12 +1,13 @@
 package Mechanics;
 
-import java.awt.*;
 import java.util.HashSet;
 
 public class Field implements Runnable {
 
     private final long MAX_DELAY = 2500;
     private final long MIN_DELAY = 150;
+    public int alive = 0; //TODO: Polish interaction of components with this two info-fields
+    public int generation = 0;
     private int n = 13;
     private NewCell[][] cells;
     // Runnable fields
@@ -68,17 +69,24 @@ public class Field implements Runnable {
         }
     }
 
-    public HashSet<Polygon> step() {
+    public HashSet<NewCell> step() {
         computeCheckList();
-        HashSet<Polygon> res = new HashSet<>(checkList.size());
+        HashSet<NewCell> changedCells = new HashSet<>();
         for (NewCell cell : checkList) {
             cell.computeNewState();
-            res.add(cell.getShape());
         }
         for (NewCell cell : checkList) {
-            cell.changeState();
+            if (cell.changeState()) {
+                changedCells.add(cell);
+                if (cell.getState().equals(CellState.ALIVE)) {
+                    alive++;
+                } else alive--;
+            }
         }
-        return res;
+        if (changedCells.size() > 0) {
+            generation++;
+        }
+        return changedCells;
     }
 
     private void unpreparedStep() {
@@ -99,8 +107,17 @@ public class Field implements Runnable {
         checkList = newList;
     }
 
+    public void reverseState(int i, int j) {
+        cells[i][j].reverseState();
+        CellState state = cells[i][j].getState();
+        if (state.equals(CellState.ALIVE)) {
+            alive++;
+        } else alive--;
+    }
+
     @Override
     public void run() {
+        //TODO: Read about Threads again. And fix this method.
         try {
             computeCheckList();
             while (isRunning && !checkList.isEmpty()) {
@@ -110,6 +127,10 @@ public class Field implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public NewCell getCell(int i, int j) {
+        return cells[i][j];
     }
 
     public void setDelay(long delay) {
@@ -124,7 +145,4 @@ public class Field implements Runnable {
         this.delay = delay;
     }
 
-    public void setShape(int i, int j, Polygon shape) {
-        cells[i][j].setShape(shape);
-    }
 }

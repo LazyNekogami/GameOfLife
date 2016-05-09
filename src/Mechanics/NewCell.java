@@ -1,6 +1,7 @@
 package Mechanics;
 
-import java.awt.*;
+import GameUI.GraphicalCell;
+
 import java.util.HashSet;
 
 public class NewCell {
@@ -8,17 +9,11 @@ public class NewCell {
     private CellState new_state;
     private Field field;
     private HashSet<NewCell> adj; //adjecent cellst to current
-
-    private Polygon shape;
+    private GraphicalCell shape;
 
     public NewCell() {
         adj = new HashSet<>(8);
         state = CellState.DEAD;
-    }
-
-    public NewCell(Field field) {
-        this();
-        this.field = field;
     }
 
     public void computeNewState() {
@@ -51,11 +46,11 @@ public class NewCell {
         changeState();
     }
 
-    public Polygon getShape() {
+    public GraphicalCell getShape() {
         return shape;
     }
 
-    public void setShape(Polygon shape) {
+    public void setShape(GraphicalCell shape) {
         this.shape = shape;
     }
 
@@ -63,8 +58,10 @@ public class NewCell {
         return state;
     }
 
-    public void changeState() {
+    public boolean changeState() {
+        CellState old_state = state;
         state = new_state;
+        return !state.equals(old_state);
     }
 
     public void addAdj(NewCell cell) {
@@ -74,4 +71,5 @@ public class NewCell {
     public HashSet<NewCell> getAdj() {
         return adj;
     }
+
 }

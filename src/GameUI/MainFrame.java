@@ -2,10 +2,7 @@ package GameUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
+import java.awt.event.*;
 import java.util.Random;
 
 @SuppressWarnings("serial")
@@ -28,7 +25,7 @@ public class MainFrame extends JFrame implements ActionListener, AdjustmentListe
     protected JButton stepButton = new JButton("Step");
 
     protected JLabel numberScrollLabel = new JLabel("Number of cells in row:");
-    protected JScrollBar numberScroll = new JScrollBar(Adjustable.HORIZONTAL, 13, 1, 1, 20);
+    protected JScrollBar numberScroll = new JScrollBar(Adjustable.HORIZONTAL, 13, 1, 2, 20);
     protected JLabel delayScrollLabel = new JLabel("Delay:");
     protected JScrollBar delayScroll = new JScrollBar(Adjustable.HORIZONTAL, 500, 50, 150, 2000);
 
@@ -48,8 +45,14 @@ public class MainFrame extends JFrame implements ActionListener, AdjustmentListe
 
         // Canvas
         canv = new Canvas();
+        canv.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                updateInfo();
+            }
+        });
         add(canv);
-        canv.setBackground(Color.GREEN);
+        canv.setBackground(new Color(92, 00, 92));
         setVisible(true);
         //TODO: somehow fix bug causing not appearing infoAndControlPanel until window iconified and deiconified :/
 
@@ -79,8 +82,10 @@ public class MainFrame extends JFrame implements ActionListener, AdjustmentListe
         // ScrollBar
         controlPanel.add(numberScrollLabel);
         controlPanel.add(numberScroll);
+        numberScroll.addAdjustmentListener(this);
         controlPanel.add(delayScrollLabel);
         controlPanel.add(delayScroll);
+        delayScroll.addAdjustmentListener(this);
 
         // Labels
         infoPanel.add(aliveLabel);
@@ -112,10 +117,13 @@ public class MainFrame extends JFrame implements ActionListener, AdjustmentListe
         }
         if (source.equals(stepButton)) {
             System.out.println("Step button pressed");
-            setVisible(true);
+            canv.step();
+            updateInfo();
+//            setVisible(true);
         }
         if (source.equals(stopButton)) {
             System.out.println("Stop button pressed");
+            //TODO: Make start/stop buttons functional
             startButton.setVisible(true);
             stopButton.setVisible(false);
             stepButton.setEnabled(true);
@@ -128,7 +136,14 @@ public class MainFrame extends JFrame implements ActionListener, AdjustmentListe
     public void adjustmentValueChanged(AdjustmentEvent e) {
         Object source = e.getSource();
         if (source.equals(numberScroll)) {
-
+            canv.setN(numberScroll.getValue());
+            updateInfo();
+            canv.repaint();
         }
+    }
+
+    private void updateInfo() {
+        aliveLabel.setText("Currently alive: " + canv.alive());
+        generationLabel.setText("Current generation: " + canv.generation());
     }
 }

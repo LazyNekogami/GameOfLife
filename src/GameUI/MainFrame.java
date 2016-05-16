@@ -33,10 +33,14 @@ public class MainFrame extends JFrame implements ActionListener, AdjustmentListe
     protected JLabel aliveLabel = new JLabel("Currently alive: NaN");
     protected JLabel generationLabel = new JLabel("Current generation: NaN");
 
+    protected Thread gameThread;
+
     MainFrame() {
         // Main Frame
         calculateScreenCenter();
         setBounds(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        setTitle("Conway's Game of Life");
+        setIconImage(createImageIcon("/icon.png", "MainFrameIcon").getImage());
         setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -52,8 +56,10 @@ public class MainFrame extends JFrame implements ActionListener, AdjustmentListe
             }
         });
         add(canv);
+        canv.setParentFrame(this);
         canv.setBackground(new Color(92, 00, 92));
         setVisible(true);
+
         //TODO: somehow fix bug causing not appearing infoAndControlPanel until window iconified and deiconified :/
 
         // Panels
@@ -91,6 +97,8 @@ public class MainFrame extends JFrame implements ActionListener, AdjustmentListe
         infoPanel.add(aliveLabel);
         infoPanel.add(generationLabel);
         setVisible(true);
+
+        gameThread = canv.gameThread;
     }
 
     public static void main(String agrs[]) {
@@ -103,32 +111,55 @@ public class MainFrame extends JFrame implements ActionListener, AdjustmentListe
         y = (int) (screenSize.getHeight() - DEFAULT_HEIGHT) / 2;
     }
 
+    private ImageIcon createImageIcon(String path,
+                                      String description) {
+        java.net.URL imgURL = getClass().getResource(path);
+        if (imgURL != null) {
+            return new ImageIcon(imgURL, description);
+        } else {
+            System.err.println("Couldn't find file: " + path);
+            return null;
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
         Random rnd = new Random(); // let it be
+        // Start Button
         if (source.equals(startButton)) {
             System.out.println("Start button pressed");
+            if (gameThread.isAlive()) {
+                System.out.println("It's alive! ALIVE!!!");
+                canv.myresume();
+            } else {
+                System.out.println("Meh. Its stone dead.. :|");
+                gameThread.start();
+            }
             startButton.setVisible(false);
             stopButton.setVisible(true);
             stepButton.setEnabled(false);
             numberScroll.setEnabled(false);
             delayScroll.setEnabled(false);
+            canv.setClickable(false);
         }
+        // Step button
         if (source.equals(stepButton)) {
             System.out.println("Step button pressed");
             canv.step();
             updateInfo();
-//            setVisible(true);
         }
+        // Stop button
         if (source.equals(stopButton)) {
             System.out.println("Stop button pressed");
+            canv.mysuspend();
             //TODO: Make start/stop buttons functional
             startButton.setVisible(true);
             stopButton.setVisible(false);
             stepButton.setEnabled(true);
             numberScroll.setEnabled(true);
             delayScroll.setEnabled(true);
+            canv.setClickable(true);
         }
     }
 
@@ -140,9 +171,12 @@ public class MainFrame extends JFrame implements ActionListener, AdjustmentListe
             updateInfo();
             canv.repaint();
         }
+        if (source.equals(delayScroll)) {
+            canv.setDelay(delayScroll.getValue());
+        }
     }
 
-    private void updateInfo() {
+    protected void updateInfo() {
         aliveLabel.setText("Currently alive: " + canv.alive());
         generationLabel.setText("Current generation: " + canv.generation());
     }

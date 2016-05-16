@@ -4,21 +4,20 @@ import GameUI.GraphicalCell;
 
 import java.util.HashSet;
 
-public class NewCell {
+public class Cell {
     private CellState state;
     private CellState new_state;
-    private Field field;
-    private HashSet<NewCell> adj; //adjecent cellst to current
+    private HashSet<Cell> adj; //adjecent cellst to current
     private GraphicalCell shape;
 
-    public NewCell() {
+    public Cell() {
         adj = new HashSet<>(8);
         state = CellState.DEAD;
     }
 
     public void computeNewState() {
         int counter = 0;
-        for (NewCell cell : adj) {
+        for (Cell cell : adj) {
             if (cell.getState().equals(CellState.ALIVE)) counter++;
         }
 
@@ -64,11 +63,11 @@ public class NewCell {
         return !state.equals(old_state);
     }
 
-    public void addAdj(NewCell cell) {
+    public void addAdj(Cell cell) {
         adj.add(cell);
     }
 
-    public HashSet<NewCell> getAdj() {
+    public HashSet<Cell> getAdj() {
         return adj;
     }
 

@@ -1,22 +1,22 @@
 package GameUI;
 
-import Mechanics.NewCell;
+import Mechanics.Cell;
 
 import java.awt.*;
 
 public class GraphicalCell extends Polygon {
-    private NewCell cell;
+    private Cell cell;
 
     public GraphicalCell(int[] xpoints, int[] ypoints, int npoints) {
         super(xpoints, ypoints, npoints);
     }
 
-    public static void link(GraphicalCell shape, NewCell cell) {
+    public static void link(GraphicalCell shape, Cell cell) {
         cell.setShape(shape);
         shape.setCell(cell);
     }
 
-    public void setCell(NewCell cell) {
+    public void setCell(Cell cell) {
         this.cell = cell;
     }
 

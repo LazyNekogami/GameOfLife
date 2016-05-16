@@ -2,39 +2,24 @@ package Mechanics;
 
 import java.util.HashSet;
 
-public class Field implements Runnable {
+public class Field {
 
     private final long MAX_DELAY = 2500;
     private final long MIN_DELAY = 150;
     public int alive = 0; //TODO: Polish interaction of components with this two info-fields
     public int generation = 0;
-    private int n = 13;
-    private NewCell[][] cells;
     // Runnable fields
-    private HashSet<NewCell> checkList;
+    public HashSet<Cell> checkList;
+    private int n = 13;
+    private Cell[][] cells;
     private long delay = 500; // delay = 500 ms
-    private volatile boolean isRunning = false;
-
-    public Field() {
-        cells = new NewCell[n][n];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                cells[i][j] = new NewCell();
-            }
-        }
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                bindAdjs(i, j);
-            }
-        }
-    }
 
     public Field(int n) {
         this.n = n;
-        cells = new NewCell[n][n];
+        cells = new Cell[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                cells[i][j] = new NewCell();
+                cells[i][j] = new Cell();
             }
         }
         for (int i = 0; i < n; i++) {
@@ -50,13 +35,13 @@ public class Field implements Runnable {
                 int adj_i = (i + v + n) % n;
                 int adj_j = (j + h + n) % n;
                 if (adj_i == i && adj_j == j) continue;
-                NewCell adj = cells[adj_i][adj_j];
+                Cell adj = cells[adj_i][adj_j];
                 cells[i][j].addAdj(adj);
             }
         }
     }
 
-    private void computeCheckList() {
+    public void prepareCheckList() {
         checkList = new HashSet<>();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -69,13 +54,13 @@ public class Field implements Runnable {
         }
     }
 
-    public HashSet<NewCell> step() {
-        computeCheckList();
-        HashSet<NewCell> changedCells = new HashSet<>();
-        for (NewCell cell : checkList) {
+    public HashSet<Cell> step() {
+        prepareCheckList();
+        HashSet<Cell> changedCells = new HashSet<>();
+        for (Cell cell : checkList) {
             cell.computeNewState();
         }
-        for (NewCell cell : checkList) {
+        for (Cell cell : checkList) {
             if (cell.changeState()) {
                 changedCells.add(cell);
                 if (cell.getState().equals(CellState.ALIVE)) {
@@ -89,20 +74,25 @@ public class Field implements Runnable {
         return changedCells;
     }
 
-    private void unpreparedStep() {
+    public void unpreparedStep() {
         if (checkList == null) {
-            computeCheckList();
+            prepareCheckList();
         }
-        HashSet<NewCell> newList = new HashSet<>();
-        for (NewCell cell : checkList) {
+        HashSet<Cell> newList = new HashSet<>();
+        for (Cell cell : checkList) {
             cell.computeNewState();
         }
-        for (NewCell cell : checkList) {
-            cell.changeState();
-            if (cell.getState().equals(CellState.ALIVE)) {
+        for (Cell cell : checkList) {
+            if (cell.changeState()) {
                 newList.addAll(cell.getAdj());
                 newList.add(cell);
+                if (cell.getState().equals(CellState.ALIVE)) {
+                    alive++;
+                } else alive--;
             }
+        }
+        if (newList.size() > 0) {
+            generation++;
         }
         checkList = newList;
     }
@@ -115,22 +105,12 @@ public class Field implements Runnable {
         } else alive--;
     }
 
-    @Override
-    public void run() {
-        //TODO: Read about Threads again. And fix this method.
-        try {
-            computeCheckList();
-            while (isRunning && !checkList.isEmpty()) {
-                unpreparedStep();
-                Thread.sleep(delay);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    public Cell getCell(int i, int j) {
+        return cells[i][j];
     }
 
-    public NewCell getCell(int i, int j) {
-        return cells[i][j];
+    public long getDelay() {
+        return delay;
     }
 
     public void setDelay(long delay) {
@@ -144,5 +124,4 @@ public class Field implements Runnable {
         }
         this.delay = delay;
     }
-
 }

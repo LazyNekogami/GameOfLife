@@ -153,7 +153,6 @@ public class MainFrame extends JFrame implements ActionListener, AdjustmentListe
         if (source.equals(stopButton)) {
             System.out.println("Stop button pressed");
             canv.mysuspend();
-            //TODO: Make start/stop buttons functional
             startButton.setVisible(true);
             stopButton.setVisible(false);
             stepButton.setEnabled(true);

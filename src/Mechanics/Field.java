@@ -6,7 +6,7 @@ public class Field {
 
     private final long MAX_DELAY = 2500;
     private final long MIN_DELAY = 150;
-    public int alive = 0; //TODO: Polish interaction of components with this two info-fields
+    public int alive = 0;
     public int generation = 0;
     // Runnable fields
     public HashSet<Cell> checkList;

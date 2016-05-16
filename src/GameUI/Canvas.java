@@ -9,7 +9,6 @@ import java.awt.event.MouseListener;
 import java.util.HashSet;
 
 public class Canvas extends java.awt.Canvas implements MouseListener, Runnable {
-    MainFrame parentFrame;
     // Graphics
     protected int fieldOffset;
     protected int fieldWidth;
@@ -21,6 +20,15 @@ public class Canvas extends java.awt.Canvas implements MouseListener, Runnable {
     protected boolean isClickable = true;
     protected boolean suspendFlag;
     protected Thread gameThread;
+    MainFrame parentFrame;
+
+    Canvas() {
+        super();
+        addMouseListener(this);
+        field = new Field(n);
+        shapes = new GraphicalCell[n][n];
+        gameThread = new Thread(this);
+    }
 
     // Setters
     public void setClickable(boolean clickable) {
@@ -31,23 +39,13 @@ public class Canvas extends java.awt.Canvas implements MouseListener, Runnable {
         this.parentFrame = frame;
     }
 
-    synchronized void mysuspend(){
+    synchronized void mysuspend() {
         suspendFlag = true;
     }
 
-    synchronized void mysuspend(){
-        suspendFlag = true;
-    }
-
-    synchronized void myresume(){
+    synchronized void myresume() {
         suspendFlag = false;
         notify();
-    }    Canvas() {
-        super();
-        addMouseListener(this);
-        field = new Field(n);
-        shapes = new GraphicalCell[n][n];
-        gameThread = new Thread(this);
     }
 
 //    Canvas(int n) {

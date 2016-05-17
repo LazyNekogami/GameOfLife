@@ -18,7 +18,7 @@ public class Canvas extends java.awt.Canvas implements MouseListener, Runnable {
     // Mechanics
     protected Field field;
     protected boolean isClickable = true;
-    protected boolean suspendFlag;
+    protected boolean killThreadFlag = false;
     protected Thread gameThread;
     MainFrame parentFrame;
 
@@ -39,22 +39,9 @@ public class Canvas extends java.awt.Canvas implements MouseListener, Runnable {
         this.parentFrame = frame;
     }
 
-    synchronized void mysuspend() {
-        suspendFlag = true;
+    public void killThread() {
+        killThreadFlag = false;
     }
-
-    synchronized void myresume() {
-        suspendFlag = false;
-        notify();
-    }
-
-//    Canvas(int n) {
-//        super();
-//        this.n = n;
-//        addMouseListener(this);
-//        field = new Field(n);
-//        shapes = new GraphicalCell[n][n];
-//    }
 
     public void repaint(Rectangle area) {
         int x = (int) area.getX();
@@ -163,12 +150,7 @@ public class Canvas extends java.awt.Canvas implements MouseListener, Runnable {
     public void run() {
         try {
             field.prepareCheckList();
-            while (field.checkList.isEmpty() != true) {
-                synchronized(this){
-                    while (suspendFlag){
-                        wait();
-                    }
-                }
+            while (field.checkList.isEmpty() != true && !killThreadFlag) {
                 field.unpreparedStep();
                 parentFrame.updateInfo();
                 for (Cell cell : field.checkList) {

@@ -129,13 +129,7 @@ public class MainFrame extends JFrame implements ActionListener, AdjustmentListe
         // Start Button
         if (source.equals(startButton)) {
             System.out.println("Start button pressed");
-            if (gameThread.isAlive()) {
-                System.out.println("It's alive! ALIVE!!!");
-                canv.myresume();
-            } else {
-                System.out.println("Meh. Its stone dead.. :|");
-                gameThread.start();
-            }
+            gameThread = new Thread(canv);
             startButton.setVisible(false);
             stopButton.setVisible(true);
             stepButton.setEnabled(false);
@@ -152,7 +146,7 @@ public class MainFrame extends JFrame implements ActionListener, AdjustmentListe
         // Stop button
         if (source.equals(stopButton)) {
             System.out.println("Stop button pressed");
-            canv.mysuspend();
+            canv.killThread();
             startButton.setVisible(true);
             stopButton.setVisible(false);
             stepButton.setEnabled(true);

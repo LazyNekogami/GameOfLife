@@ -130,6 +130,7 @@ public class MainFrame extends JFrame implements ActionListener, AdjustmentListe
         if (source.equals(startButton)) {
             System.out.println("Start button pressed");
             gameThread = new Thread(canv);
+            gameThread.start();
             startButton.setVisible(false);
             stopButton.setVisible(true);
             stepButton.setEnabled(false);

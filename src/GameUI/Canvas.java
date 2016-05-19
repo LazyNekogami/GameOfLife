@@ -40,7 +40,7 @@ public class Canvas extends java.awt.Canvas implements MouseListener, Runnable {
     }
 
     public void killThread() {
-        killThreadFlag = false;
+        killThreadFlag = true;
     }
 
     public void repaint(Rectangle area) {
@@ -58,7 +58,7 @@ public class Canvas extends java.awt.Canvas implements MouseListener, Runnable {
     }
 
     private void computeFieldWidth() {
-        int psz = 1;
+        int psz = 1; //pen size = 1 px.
         fieldDx = (getWidth() - psz) / n; // DEFAULT_WIDTH = n * (psz + csz) + psz;
         fieldWidth = fieldDx * n + psz;
         fieldOffset = (getWidth() - fieldWidth) / 2;
@@ -149,6 +149,7 @@ public class Canvas extends java.awt.Canvas implements MouseListener, Runnable {
     @Override
     public void run() {
         try {
+            killThreadFlag = false;
             field.prepareCheckList();
             while (field.checkList.isEmpty() != true && !killThreadFlag) {
                 field.unpreparedStep();
